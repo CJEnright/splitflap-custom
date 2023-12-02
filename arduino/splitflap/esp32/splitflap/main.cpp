@@ -46,32 +46,42 @@ MQTTTask mqttTask(splitflapTask, serialTask, 0);
 HTTPTask httpTask(splitflapTask, displayTask, serialTask, 0);
 #endif
 
-void setup() {
+#if WS
+#include "ws_task.h"
+WSTask wsTask(splitflapTask, displayTask, serialTask, 0);
+#endif
+
+void setup()
+{
   serialTask.begin();
 
   splitflapTask.begin();
 
-  #if ENABLE_DISPLAY
+#if ENABLE_DISPLAY
   displayTask.begin();
-  #endif
+#endif
 
-  #if MQTT
+#if MQTT
   mqttTask.begin();
-  #endif
+#endif
 
-  #if HTTP
+#if HTTP
   httpTask.begin();
-  #endif
+#endif
 
-  #ifdef CHAINLINK_BASE
+#if WS
+  wsTask.begin();
+#endif
+
+#ifdef CHAINLINK_BASE
   baseSupervisorTask.begin();
-  #endif
+#endif
 
   // Delete the default Arduino loopTask to free up Core 1
   vTaskDelete(NULL);
 }
 
-
-void loop() {
+void loop()
+{
   assert(false);
 }
