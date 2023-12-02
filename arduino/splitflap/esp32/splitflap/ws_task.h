@@ -42,7 +42,6 @@ protected:
 private:
     void connectWifi();
     void loop(WStype_t type, uint8_t *payload, size_t length);
-    bool handleData(String data);
 
     SplitflapTask &splitflap_task_;
     DisplayTask &display_task_;
