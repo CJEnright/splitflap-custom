@@ -48,11 +48,4 @@ private:
     Logger &logger_;
     WiFiClient wifi_client_;
     WebSocketsClient webSocket;
-
-    uint32_t WS_last_request_time_ = 0;
-    uint32_t WS_last_success_time_ = 0;
-
-    std::vector<String> messages_ = {};
-    uint8_t current_message_index_ = 0;
-    uint32_t last_message_change_time_ = 0;
 };
