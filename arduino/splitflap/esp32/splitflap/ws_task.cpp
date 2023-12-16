@@ -65,12 +65,35 @@ void WSTask::connectWifi()
     logger_.log(buf);
 }
 
+void WSTask::process_message(const uint8_t *payload)
+{
+    char message[max(NUM_MODULES + 1, 256)];
+    size_t len = strlcpy(message, (char *)payload, sizeof(message));
+
+    if (strcmp(message, "calibrate") == 0)
+    {
+        splitflap_task_.resetAll();
+    }
+    else if (strcmp(message, "text") == 0)
+    {
+        // Remove "text " prefix
+        memmove(message, message + 5, len - 5 + 1);
+
+        // Pad message for display
+        memset(message + len, ' ', sizeof(message) - len);
+        String message_string = String(message);
+
+        if (last_message_ != message_string)
+        {
+            splitflap_task_.showString(message, NUM_MODULES, false);
+            last_message_ = message_string;
+        }
+    }
+}
+
 void WSTask::loop(WStype_t type, uint8_t *payload, size_t length)
 {
     char buf[max(NUM_MODULES + 1, 256)];
-    size_t len = 0;
-
-    logger_.log("In loop");
 
     switch (type)
     {
@@ -79,20 +102,10 @@ void WSTask::loop(WStype_t type, uint8_t *payload, size_t length)
         break;
     case WStype_CONNECTED:
         logger_.log("[WSc] Connected to url");
-
-        // send message to server when Connected
-        webSocket.sendTXT("Connected");
         break;
     case WStype_TEXT:
-
         snprintf(buf, sizeof(buf), "[WSc] get text: %s", payload);
         logger_.log(buf);
-
-        // Pad message for display
-        len = strlcpy(buf, (char *)payload, sizeof(buf));
-        memset(buf + len, ' ', sizeof(buf) - len);
-
-        splitflap_task_.showString(buf, NUM_MODULES);
 
         break;
     case WStype_BIN:
@@ -156,3 +169,11 @@ void WSTask::run()
     }
 }
 #endif
+
+/*
+
+* Investigate single character changes
+* Investigate ghost flaps
+* Hook up recalibration
+
+*/

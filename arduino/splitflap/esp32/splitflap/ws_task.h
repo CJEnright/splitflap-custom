@@ -42,10 +42,12 @@ protected:
 private:
     void connectWifi();
     void loop(WStype_t type, uint8_t *payload, size_t length);
+    void process_message(const uint8_t *payload);
 
     SplitflapTask &splitflap_task_;
     DisplayTask &display_task_;
     Logger &logger_;
     WiFiClient wifi_client_;
     WebSocketsClient webSocket;
+    String last_message_;
 };
