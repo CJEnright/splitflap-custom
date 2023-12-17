@@ -107,6 +107,8 @@ void WSTask::loop(WStype_t type, uint8_t *payload, size_t length)
         snprintf(buf, sizeof(buf), "[WSc] get text: %s", payload);
         logger_.log(buf);
 
+        process_message(payload);
+
         break;
     case WStype_BIN:
         logger_.log("[WSc] get binary length");
