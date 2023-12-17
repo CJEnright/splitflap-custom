@@ -70,11 +70,11 @@ void WSTask::process_message(const uint8_t *payload)
     char message[max(NUM_MODULES + 1, 256)];
     size_t len = strlcpy(message, (char *)payload, sizeof(message));
 
-    if (strcmp(message, "calibrate") == 0)
+    if (strncmp(message, "calibrate", 9) == 0)
     {
         splitflap_task_.resetAll();
     }
-    else if (strcmp(message, "text") == 0)
+    else if (strncmp(message, "text ", 5) == 0)
     {
         // Remove "text " prefix
         memmove(message, message + 5, len - 5 + 1);
